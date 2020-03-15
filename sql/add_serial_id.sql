@@ -1,0 +1,1 @@
+alter table debt add column id serial
