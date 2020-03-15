@@ -6,3 +6,4 @@ where exists (	select *
 					and  crs.cso_connects.PERIOD between 201912 and 202002
 				) 
 			and PERIOD between 201912 and 202002
+			and rownum <10

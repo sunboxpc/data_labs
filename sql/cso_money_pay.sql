@@ -1,4 +1,17 @@
-select *
-from crs.cso_money_pay
-where PERIOD_CONNECT between 201912 and 202002 and 
-	DATE_PAY between TO_TIMESTAMP('01-12-2019 00:00:00') and TO_TIMESTAMP('01-03-2020 00:00:00')
+select 	PERIOD_CONNECT, CLIE_ID, P1_PERIOD_PAY, P1_AMOUNT_PAY, P2_PERIOD_PAY, P2_AMOUNT_PAY,
+		P3_PERIOD_PAY, P3_AMOUNT_PAY, P4_PERIOD_PAY, P4_AMOUNT_PAY
+from (
+	select PERIOD_CONNECT, CLIE_ID, PERIOD_PAY, AMOUNT_PAY, 
+	row_number() over(partition by CLIE_ID order by PERIOD_PAY) as PERIOD_PAY_ID
+	from (
+		select PERIOD_CONNECT, CLIE_ID, TO_NUMBER(TO_CHAR(DATE_PAY, 'YYYYMM')) as PERIOD_PAY, SUM(SUM_PAY) as AMOUNT_PAY
+		from crs.cso_money_pay
+		group by PERIOD_CONNECT, CLIE_ID, TO_NUMBER(TO_CHAR(DATE_PAY, 'YYYYMM'))
+		having PERIOD_CONNECT between 201912 and 202012 
+		--	and DATE_PAY between TO_TIMESTAMP('01-12-2019 00:00:00') and TO_TIMESTAMP('01-03-2020 00:00:00')
+		--	and rownum <100
+		)
+	)
+pivot ( sum(AMOUNT_PAY) as AMOUNT_PAY, max(PERIOD_PAY) as PERIOD_PAY
+		for PERIOD_PAY_ID in (1 as P1,2 as P2,3 as P3,4 as P4)
+		)
