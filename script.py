@@ -12,9 +12,9 @@ from billing_class import Billing, lifetime, encript_col, agent_info_update, act
 from db_connection import my_postgres_conncection
 
 
-def main():
-    billing = Billing()
-    billing.load_sales(get_from_other=True)
+
+billing = Billing()
+billing.load_sales(get_from_other=True)
 
 
 #mapper = {key: 'AMOUNT' for key in df.columns if key in _amount_fileds}
@@ -22,21 +22,21 @@ def main():
 #engine = my_postgres_conncection()
 #df.to_sql('temp', engine, if_exists='replace')
 #billing.process_data(db_name='payments',format_column_only=True)
-    billing.load_accruals()
-    billing.process_data(format_column_only=False)
-    clie_db = billing.merge_df()
-    clie_db = clie_db.loc[clie_db.CHANNEL == 'Активный канал']
-    clie_db = lifetime(clie_db)
-    clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIOPRO', 'CHANNEL'], encript_col_name='KEY')
-    clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIO_SUP', 'CHANNEL'], encript_col_name='KEY_SUP')
-    df = agent_info_update(clie_db)
-    agent_info_update(clie_db, file_name='sup_db.csv', group_cols=['KEY_SUP','FIO_SUP'])
-    active_angent_template(clie_db, output_file_name='Pivot_Active_Stat.csv')
-    print('export')
-    clie_db.to_excel('clie_db_2019ba.xlsx')
+billing.load_accruals()
+billing.process_data(format_column_only=False)
+clie_db = billing.merge_df()
+clie_db = clie_db.loc[clie_db.CHANNEL == 'Активный канал']
+clie_db = lifetime(clie_db)
+clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIOPRO', 'CHANNEL'], encript_col_name='KEY')
+clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIO_SUP', 'CHANNEL'], encript_col_name='KEY_SUP')
+df = agent_info_update(clie_db)
+agent_info_update(clie_db, file_name='sup_db.csv', group_cols=['KEY_SUP','FIO_SUP'])
+active_angent_template(clie_db, output_file_name='Pivot_Active_Stat.csv')
+print('export')
+clie_db.to_excel('clie_db_2019ba.xlsx')
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
 
 #clie_db = pd.read_excel('clie_db_2019ba.xlsx')
 #
