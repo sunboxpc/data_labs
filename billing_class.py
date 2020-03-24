@@ -75,7 +75,7 @@ def get_files_list(path_str=None, pattern=None, file_type=None):
 def agent_info_update(df, file_name='fiopro_db.csv', group_cols=['KEY', 'FIOPRO']):
     cols = ['FILIAL', 'CHANNEL']
     group_cols.extend(cols)
-    gdf = df.groupby(group_cols)['DDATE_DATE_sale'].min().reset_index()
+    gdf = df.groupby(group_cols)['DDATE_DATE_sale'].min().reset_index(level=0)
     gdf.rename({'DDATE_DATE_sale': 'min_date_sale'}, inplace=True, axis=1)
     if Path(file_name).is_file():
         tmp = pd.read_csv(file_name, sep=';', encoding='windows-1251')
@@ -314,7 +314,7 @@ class Billing:
         return df_columns, df_columns_types
 
             
-    def load_data(self, path, skiprows=None, nrows = None, sep='$', decima_sep ='.', index_col = False, sheet_name = 1, file_type=None ):
+    def load_data(self, path, skiprows=None, nrows = None, sep=';', decima_sep ='.', index_col = False, sheet_name = 1, file_type=None ):
         print(file_type)
         if file_type == 'csv':
             df = pd.read_csv(path, sep=sep, decimal=decima_sep, index_col=index_col, nrows=3).fillna(0)
@@ -487,9 +487,9 @@ class Billing:
                     df['FIO_SUP_old'] = df['FIO_SUP']
                     df['FIOPRO'] = df['FIOPRO'].apply(lambda x: str(x)).str.upper().str.strip()
                     df['FIO_SUP'] = df['FIO_SUP'].apply(lambda x: str(x)).str.upper().str.strip()
-                    for key, val in replacement_dict.items():
-                        df['FIOPRO'] = df['FIOPRO'].str.replace(key, val)
-                        df['FIO_SUP'] = df['FIO_SUP'].str.replace(key, val)
+#                    for key, val in replacement_dict.items():
+#                        df['FIOPRO'] = df['FIOPRO'].str.replace(key, val)
+#                        df['FIO_SUP'] = df['FIO_SUP'].str.replace(key, val)
 #                            '(^[а-яА-Яa-zA-Z]{1,4}[\-_]+)|(\s[a-zA-Zа-яА-Я]{1,4}[\-_]+)', ''
 #                              ).str.replace('[^-\w\s]', ''
 #                              ).str.replace('[eEЁ]','Е'

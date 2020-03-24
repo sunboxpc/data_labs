@@ -13,8 +13,8 @@ from db_connection import my_postgres_conncection
 
 
 
-billing = Billing()
-billing.load_sales(get_from_other=True)
+#billing = Billing()
+#billing.load_sales(name='sale')#get_from_other=False)
 
 
 #mapper = {key: 'AMOUNT' for key in df.columns if key in _amount_fileds}
@@ -22,10 +22,15 @@ billing.load_sales(get_from_other=True)
 #engine = my_postgres_conncection()
 #df.to_sql('temp', engine, if_exists='replace')
 #billing.process_data(db_name='payments',format_column_only=True)
-billing.load_accruals()
-billing.process_data(format_column_only=False)
-clie_db = billing.merge_df()
-clie_db = clie_db.loc[clie_db.CHANNEL == 'Активный канал']
+#billing.load_accruals()
+#billing.process_data(format_column_only=False)
+#clie_db = billing.merge_df()
+#clie_db = clie_db.loc[clie_db.CHANNEL == 'Активный канал']
+
+clie_db = pd.read_excel('export.xlsx')
+clie_db = clie_db.rename({'DATE_SALE':'DDATE_DATE_sale'}, axis=1)
+clie_db = clie_db.rename({'DATE_CHURN':'DDATE_DATE_churn'}, axis=1)
+clie_db = clie_db.rename({'PERIOD_SALE':'PERIOD_DATE_sale'}, axis=1)
 clie_db = lifetime(clie_db)
 clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIOPRO', 'CHANNEL'], encript_col_name='KEY')
 clie_db = encript_col(clie_db, cols = ['FILIAL', 'FIO_SUP', 'CHANNEL'], encript_col_name='KEY_SUP')
